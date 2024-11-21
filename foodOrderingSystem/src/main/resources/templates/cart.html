@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Your Cart</h1>
+<ul>
+    <li th:each="item : ${cartItems}">
+        <span th:text="${item.foodName}"></span> - $<span th:text="${item.price}"></span>
+    </li>
+</ul>
+<form action="/place-order" method="post">
+    <button type="submit">Place Order</button>
+</form>
+</body>
+</html>
