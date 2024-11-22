@@ -16,6 +16,12 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    @GetMapping
+    public String getAllCartItems(Model model) {
+        model.addAttribute("cartItems", cartService.getAllCartItems());
+        return "cart/index"; // Create this template in `templates/cart/index.html`
+    }
+
     @PostMapping("/add-to-cart")
     public String addToCart(@RequestParam String foodName, @RequestParam double price) {
         Cart cart = new Cart();
@@ -25,10 +31,16 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    @GetMapping("/cart")
-    public String viewCart(Model model) {
-        model.addAttribute("cartItems", cartService.getCartItems());
-        return "cart";
+    @GetMapping("/delete")
+    public String deleteCartItem(@RequestParam Long id) {
+        cartService.deleteCart(id);
+        return "redirect:/cart";
+    }
+
+    @GetMapping("/clear")
+    public String clearCart() {
+        cartService.clearCart();
+        return "redirect:/cart";
     }
 
     @PostMapping("/place-order")
