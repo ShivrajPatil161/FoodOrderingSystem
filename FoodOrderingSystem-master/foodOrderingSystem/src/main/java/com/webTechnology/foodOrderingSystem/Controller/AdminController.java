@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Controller
 public class AdminController {
-    public static String uploadDir = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\foodImages\\";
+    public static String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/foodImages";
     @Autowired
     CategoryService categoryService;
     @Autowired
@@ -32,29 +32,29 @@ public class AdminController {
         return "adminHome";
     }
 
-    @GetMapping("admin/categories")
+    @GetMapping("/admin/categories")
     public String getCat(Model model) {
         model.addAttribute("categories", categoryService.getAllCategories());
         return "categories";
     }
 
-    @GetMapping("admin/categories/add")
+    @GetMapping("/admin/categories/add")
     public String getCatAdd(Model model) {
         model.addAttribute("category", new Category());
         return "categoriesAdd";
     }
 
-    @PostMapping("admin/categories/add")
+    @PostMapping("/admin/categories/add")
     public String postCatAdd(@ModelAttribute("category") Category category) {
         categoryService.addCategory(category);
         return "redirect:/admin/categories";
     }
-    @GetMapping("admin/categories/delete/{id}")
+    @GetMapping("/admin/categories/delete/{id}")
     public String deleteCat(@PathVariable int id) {
         categoryService.deleteCategoryById(id);
         return "redirect:/admin/categories";
     }
-    @GetMapping("admin/categories/update/{id}")
+    @GetMapping("/admin/categories/update/{id}")
     public String updateCat(@PathVariable int id, Model model) {
         Optional<Category> category = categoryService.getCategoryById(id);
         if (category.isPresent()) {
@@ -66,20 +66,20 @@ public class AdminController {
     }
 
     // Food Section
-    @GetMapping("admin/food")
+    @GetMapping("/admin/food")
     public String Food(Model model) {
         model.addAttribute("food", foodService.getAllFoodItems());
         return "food";
     }
 
-    @GetMapping("admin/food/add")
+    @GetMapping("/admin/food/add")
     public String FoodADDGet(Model model) {
         model.addAttribute("FoodDTO", new FoodDTO());
         model.addAttribute("categories", categoryService.getAllCategories());
         return "foodAdd";
     }
 
-    @PostMapping("admin/food/add")
+    @PostMapping("/admin/food/add")
     public String foodAddPost(@ModelAttribute("FoodDTO") FoodDTO foodDTO,
                               @RequestParam("foodImage") MultipartFile file,
                               @RequestParam("imgName")String imgName)throws IOException
