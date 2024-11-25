@@ -95,22 +95,39 @@ public class AdminController {
         if(!file.isEmpty())
         {
             imageUUID = file.getOriginalFilename();
-            Path filenameAndPath = Paths.get(uploadDir, imageUUID);
-            Files.write(filenameAndPath, file.getBytes());
+            Path fileNameAndPath = Paths.get(uploadDir, imageUUID);
+            Files.write(fileNameAndPath, file.getBytes());
         } else {
             imageUUID = imgName;
         }
         food.setImageName(imageUUID);
         foodService.addFood(food);
-
-
-
         return "redirect:/admin/food";
     }
 
+    @GetMapping("/admin/food/delete/{id}")
+    public String deletefood(@PathVariable long id) {
+        foodService.removeFoodById(id);
+        return "redirect:/admin/food";
+        }
 
 
+    @GetMapping("/admin/food/update/{id}")
+    public String updatefoodGet(@PathVariable long id, Model model) {
+        FoodItem foodItem = foodService.getFoodById(id).get();
+        FoodDTO foodDTO = new FoodDTO();
+        foodDTO.setId(foodItem.getId());
+        foodDTO.setName(foodItem.getName());
+        foodDTO.setCategoryId(foodItem.getCategory().getId());
+        foodDTO.setPrice(foodItem.getPrice());
+        foodDTO.setQuantity(foodItem.getQuantity());
+        foodDTO.setDescription(foodItem.getDescription());
+        foodDTO.setImageName(foodItem.getImageName());
 
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("FoodDTO", foodDTO);
+        return "foodAdd";
 
+    }
 
 }
