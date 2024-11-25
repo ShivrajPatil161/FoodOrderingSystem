@@ -2,6 +2,7 @@ package com.webTechnology.foodOrderingSystem.Controller;
 
 
 import com.webTechnology.foodOrderingSystem.Model.Category;
+import com.webTechnology.foodOrderingSystem.Model.FoodItem;
 import com.webTechnology.foodOrderingSystem.Service.CategoryService;
 import com.webTechnology.foodOrderingSystem.Service.FoodService;
 import com.webTechnology.foodOrderingSystem.dto.FoodDTO;
@@ -9,11 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class AdminController {
+    public static String uploadDir = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\foodImages\\";
     @Autowired
     CategoryService categoryService;
     @Autowired
@@ -69,6 +77,35 @@ public class AdminController {
         model.addAttribute("FoodDTO", new FoodDTO());
         model.addAttribute("categories", categoryService.getAllCategories());
         return "foodAdd";
+    }
+
+    @PostMapping("admin/food/add")
+    public String foodAddPost(@ModelAttribute("FoodDTO") FoodDTO foodDTO,
+                              @RequestParam("foodImage") MultipartFile file,
+                              @RequestParam("imgName")String imgName)throws IOException
+    {
+        FoodItem food  = new FoodItem();
+        food.setId(foodDTO.getId());
+        food.setName(foodDTO.getName());
+        food.setCategory(categoryService.getCategoryById(foodDTO.getCategoryId()).get());
+        food.setPrice(foodDTO.getPrice());
+        food.setQuantity(foodDTO.getQuantity());
+        food.setDescription(foodDTO.getDescription());
+        String imageUUID;
+        if(!file.isEmpty())
+        {
+            imageUUID = file.getOriginalFilename();
+            Path filenameAndPath = Paths.get(uploadDir, imageUUID);
+            Files.write(filenameAndPath, file.getBytes());
+        } else {
+            imageUUID = imgName;
+        }
+        food.setImageName(imageUUID);
+        foodService.addFood(food);
+
+
+
+        return "redirect:/admin/food";
     }
 
 

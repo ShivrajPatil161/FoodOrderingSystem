@@ -25,8 +25,20 @@ public class FoodService {
         return foodRepository.findById(id);
     }
 
-    public void deleteFood(Long id) {
+    public void addFood(FoodItem foodItem) {
+        foodRepository.save(foodItem);
+    }
+
+    public void removeFoodById(long id) {
         foodRepository.deleteById(id);
     }
+
+    public List<FoodItem> getAllFoodByCategoryId(int id) {
+        return foodRepository.findAllByCategory_Id(id);
+    }
+
+
+
+    //public void deleteFood(Long id) {foodRepository.deleteById(id);}
 
 }
